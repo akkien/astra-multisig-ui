@@ -117,6 +117,7 @@ const ChainSelect = () => {
         "https://cdn.jsdelivr.net/gh/cosmos/chain-registry@master/" +
         chainOption.path +
         "/assetlist.json";
+      console.log("chainInfoUrl", chainInfoUrl); //https://cdn.jsdelivr.net/gh/cosmos/chain-registry@master/cheqd/chain.json
 
       const { data: chainData } = await axios.get(chainInfoUrl);
       const { data: assetData } = await axios.get(chainAssetUrl);

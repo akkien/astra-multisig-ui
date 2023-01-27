@@ -146,6 +146,7 @@ const multipage = () => {
           </div>
         )}
       </StackableContainer>
+
       <style jsx>{`
         .interfaces {
           display: flex;

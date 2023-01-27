@@ -25,6 +25,7 @@ module.exports = {
   ],
   rules: {
     curly: ["warn", "multi-line", "consistent"],
+    "react/no-unknown-property": "off",
     "no-bitwise": "warn",
     "no-console": "off",
     "no-param-reassign": "warn",

@@ -185,9 +185,8 @@ const ChainSelect = () => {
       //   displayDenomExponent = displayUnit?.exponent ?? 6;
       // }
 
+      // TODO: temp
       // test client connection
-      console.log("herre");
-
       const client = await StargateClient.connect(nodeAddress);
       const chainHeight = await client.getHeight();
       console.log("chainHeight", chainHeight);

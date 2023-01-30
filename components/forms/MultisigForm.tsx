@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { withRouter, NextRouter } from "next/router";
-import { StargateClient } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
-
+import { StargateClient } from "@cosmjs/stargate";
+import { myAccountParser, getMultisigAddressFromBase64Pubkey } from "../../evmos";
 import { useAppContext } from "../../context/AppContext";
 import Button from "../inputs/Button";
 import { createMultisigFromCompressedSecp256k1Pubkeys } from "../../lib/multisigHelpers";
@@ -59,7 +59,9 @@ const MultiSigForm = (props: Props) => {
 
   const getPubkeyFromNode = async (address: string) => {
     assert(state.chain.nodeAddress, "nodeAddress missing");
-    const client = await StargateClient.connect(state.chain.nodeAddress);
+    const client = await StargateClient.connect(state.chain.nodeAddress, {
+      accountParser: myAccountParser,
+    });
     const accountOnChain = await client.getAccount(address);
     console.log(accountOnChain);
     if (!accountOnChain || !accountOnChain.pubkey) {
@@ -73,6 +75,7 @@ const MultiSigForm = (props: Props) => {
   const handleKeyBlur = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const tempPubkeys = [...pubkeys];
+
       let pubkey;
       // use pubkey
       console.log(tempPubkeys[index]);
@@ -103,17 +106,13 @@ const MultiSigForm = (props: Props) => {
 
   const handleCreate = async () => {
     setProcessing(true);
+
     const compressedPubkeys = pubkeys.map((item) => item.compressedPubkey);
     let multisigAddress;
     try {
       assert(state.chain.addressPrefix, "addressPrefix missing");
       assert(state.chain.chainId, "chainId missing");
-      multisigAddress = await createMultisigFromCompressedSecp256k1Pubkeys(
-        compressedPubkeys,
-        threshold,
-        state.chain.addressPrefix,
-        state.chain.chainId,
-      );
+      multisigAddress = await getMultisigAddressFromBase64Pubkey(compressedPubkeys, threshold);
       props.router.push(`/multi/${multisigAddress}`);
     } catch (error) {
       console.log("Failed to creat multisig: ", error);
@@ -205,7 +204,7 @@ const MultiSigForm = (props: Props) => {
           max-width: 350px;
         }
         .error {
-          color: coral;
+          color: #ee5253;
           font-size: 0.8em;
           text-align: left;
           margin: 0.5em 0;

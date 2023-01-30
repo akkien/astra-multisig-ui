@@ -6,8 +6,10 @@ export const initAstraChain = async (window: any) => {
   await window.keplr.experimentalSuggestChain({
     chainId: "astra_11115-1",
     chainName: "astra testnet",
-    rpc: "http://159.89.202.43:26657",
-    rest: "http://159.89.202.43:1317",
+    // rpc: "http://159.89.202.43:26657",
+    // rest: "http://159.89.202.43:1317",
+    rpc: "https://cosmos.astranaut.dev",
+    rest: "https://api.astranaut.dev",
     bip44: {
       coinType: 60,
     },
@@ -34,9 +36,9 @@ export const initAstraChain = async (window: any) => {
         coinDecimals: 18,
         coinGeckoId: "astra",
         gasPriceStep: {
-          low: 0.01,
-          average: 0.025,
-          high: 0.04,
+          low: 800000000000,
+          average: 1000000000000,
+          high: 1400000000000,
         },
       },
     ],

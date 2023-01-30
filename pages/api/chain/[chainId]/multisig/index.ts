@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createMultisig } from "../../../../../lib/graphqlHelpers";
+import { Multisig } from "../../../../../models/models";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -7,9 +7,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       try {
         const data = req.body;
         console.log("Function `createMultisig` invoked", data);
-        const saveRes = await createMultisig(data);
-        console.log("success", saveRes.data);
-        res.status(200).send(saveRes.data.data.createMultisig);
+        const saveRes = await new Multisig(data).save();
+        console.log("success", saveRes);
+        res.status(200).send(saveRes);
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {

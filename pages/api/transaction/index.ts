@@ -1,5 +1,5 @@
-import { createTransaction } from "../../../lib/graphqlHelpers";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Transaction } from "../../../models/models";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -7,9 +7,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       try {
         const data = req.body;
         console.log("Function `createTransaction` invoked", data);
-        const saveRes = await createTransaction(data.dataJSON);
-        console.log("success", saveRes.data);
-        res.status(200).send({ transactionID: saveRes.data.data.createTransaction._id });
+        const saveRes = await new Transaction(data.dataJSON).save();
+        res.status(200).send({ transactionID: saveRes._id });
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {

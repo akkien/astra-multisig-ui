@@ -11,7 +11,6 @@ const MultisigSchema = new mongoose.Schema({
     require: true,
   },
 });
-
 export const Multisig = mongoose.model("Multisig", MultisigSchema);
 
 const SourceAddressSchema = new mongoose.Schema({
@@ -29,7 +28,7 @@ const SourceAddressSchema = new mongoose.Schema({
     ref: "Multisig",
   },
 });
-export const SourceAddress = mongoose.model("Multisig", SourceAddressSchema);
+export const SourceAddress = mongoose.model("SourceAddress", SourceAddressSchema);
 
 const TransactionSchema = new mongoose.Schema({
   signatures: [

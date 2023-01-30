@@ -1,16 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { updateTxHash } from "../../../../lib/graphqlHelpers";
+
+import { Transaction } from "../../../../models/models";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case "POST":
       try {
-        const transactionID = req.query.transactionID.toString();
+        const transactionID = (req as any).query.transactionID.toString();
         const { txHash } = req.body;
         console.log("Function `updateTransaction` invoked", txHash);
-        const saveRes = await updateTxHash(transactionID, txHash);
-        console.log("success", saveRes.data);
-        res.status(200).send(saveRes.data.data.updateTransaction);
+        const saveRes = await Transaction.updateOne(
+          { _id: transactionID },
+          { txHash: txHash },
+          { new: true },
+        );
+
+        res.status(200).send(saveRes);
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {

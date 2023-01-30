@@ -9,6 +9,7 @@ import { useAppContext } from "../../context/AppContext";
 import Select from "../inputs/Select";
 import StackableContainer from "../layout/StackableContainer";
 import { assert } from "@cosmjs/utils";
+import { ChainRegistryAsset } from "./chainregistry";
 
 interface ChainOption {
   label: string;
@@ -79,14 +80,23 @@ const ChainSelect = () => {
   const getGhJson = async () => {
     // getting chain info from this repo: https://github.com/cosmos/chain-registry
     try {
-      const res = await axios.get(url);
-      const chains = res.data.filter((item: GithubChainRegistryItem) => {
-        return item.type == "dir" && !item.name.startsWith(".") && item.name != "testnets";
-      });
-      setChainArray(chains);
-      const options = chains.map(({ name }: GithubChainRegistryItem, index: number) => {
-        return { label: name, value: index };
-      });
+      // const res = await axios.get(url);
+
+      // const chains = res.data.filter((item: GithubChainRegistryItem) => {
+      //   return item.type == "dir" && !item.name.startsWith(".") && item.name != "testnets";
+      // });
+      // console.log("chains", chains);
+
+      // setChainArray(chains);
+      // const options = chains.map(({ name }: GithubChainRegistryItem, index: number) => {
+      //   return { label: name, value: index };
+      // });
+      const options: ChainOption[] = [
+        { label: "Astra Testnet", value: 0 },
+        { label: "Astra", value: 1 },
+      ];
+      console.log("state", state);
+
       setChainOptions(options);
       assert(state.chain.registryName, "registryName missing");
       setSelectValue(findExistingOption(options, state.chain.registryName));
@@ -106,67 +116,98 @@ const ChainSelect = () => {
     return { label: "unkown chain", value: -1 };
   };
 
-  const getChainInfo = async (chainOption: GithubChainRegistryItem) => {
+  const getChainInfo = async (chainName: string) => {
     setChainError(null);
     try {
-      const chainInfoUrl =
-        "https://cdn.jsdelivr.net/gh/cosmos/chain-registry@master/" +
-        chainOption.path +
-        "/chain.json";
-      const chainAssetUrl =
-        "https://cdn.jsdelivr.net/gh/cosmos/chain-registry@master/" +
-        chainOption.path +
-        "/assetlist.json";
-      console.log("chainInfoUrl", chainInfoUrl); //https://cdn.jsdelivr.net/gh/cosmos/chain-registry@master/cheqd/chain.json
-
-      const { data: chainData } = await axios.get(chainInfoUrl);
-      const { data: assetData } = await axios.get(chainAssetUrl);
-
-      const nodeAddress = getNodeFromArray(chainData.apis.rpc);
-      const addressPrefix = chainData["bech32_prefix"];
-      const chainId = chainData["chain_id"];
-      const chainDisplayName = chainData["pretty_name"];
-      const registryName = chainOption.name;
-      const explorerLink = getExplorerFromArray(chainData.explorers);
+      let nodeAddress = "https://cosmos.astranaut.dev"; // getNodeFromArray(chainData.apis.rpc);
+      let addressPrefix = "astra"; // chainData["bech32_prefix"];
+      let chainId = "astra_11115-1"; // chainData["chain_id"];
+      let chainDisplayName = "Astra Testnet"; // chainData["pretty_name"];
+      let registryName = "Astra Testnet"; // chainOption.name;
+      let explorerLink = "https://explorer.astranaut.dev/vi"; // getExplorerFromArray(chainData.explorers);
       let asset = null;
-      let denom = "";
-      let displayDenom = "";
-      const displayDenomExponent = 6;
-      let gasPrice = "";
+      let denom = "aastra";
+      let displayDenom = "ASTRA";
+      let displayDenomExponent = 18;
+      let gasPrice = "1600000000000aastra";
 
-      if (assetData.assets.length > 1) {
-        denom = "";
-        displayDenom = "";
-        gasPrice = "";
-
-        setChainError("Multiple token denoms available, enter manually");
-        setShowSettings(true);
-      } else {
-        asset = assetData.assets[0];
-        denom = asset.base;
-        displayDenom = asset.symbol;
-        gasPrice = `0.03${asset.base}`;
+      if (chainName === "Astra") {
+        nodeAddress = "https://cosmos.astranaut.dev"; // getNodeFromArray(chainData.apis.rpc);
+        addressPrefix = "astra"; // chainData["bech32_prefix"];
+        chainId = "astra_11115-1"; // chainData["chain_id"];
+        chainDisplayName = "Astra"; // chainData["pretty_name"];
+        registryName = "Astra"; // chainOption.name;
+        explorerLink = "https://explorer.astranaut.dev/vi"; // getExplorerFromArray(chainData.explorers);
+        asset = null;
+        denom = "aastra";
+        displayDenom = "ASTRA";
+        displayDenomExponent = 18;
+        gasPrice = "1600000000000aastra";
       }
 
-      // test client connection
-      const client = await StargateClient.connect(nodeAddress);
-      await client.getHeight();
+      // const chainInfoUrl =
+      //   "https://cdn.jsdelivr.net/gh/cosmos/chain-registry@master/" +
+      //   chainOption.path +
+      //   "/chain.json";
+      // const chainAssetUrl =
+      //   "https://cdn.jsdelivr.net/gh/cosmos/chain-registry@master/" +
+      //   chainOption.path +
+      //   "/assetlist.json";
 
+      // const { data: chainData } = await axios.get(chainInfoUrl);
+      // const { data: assetData } = await axios.get(chainAssetUrl);
+
+      // const nodeAddress = getNodeFromArray(chainData.apis.rpc);
+      // const addressPrefix = chainData["bech32_prefix"];
+      // const chainId = chainData["chain_id"];
+      // const chainDisplayName = chainData["pretty_name"];
+      // const registryName = chainOption.name;
+      // const explorerLink = getExplorerFromArray(chainData.explorers);
+      // let denom: string;
+      // let displayDenom: string;
+      // let displayDenomExponent: number;
+      // let gasPrice: string;
+
+      // if (assetData.assets.length > 1) {
+      //   denom = "";
+      //   displayDenom = "";
+      //   gasPrice = "";
+      //   displayDenomExponent = 0;
+
+      //   setChainError("Multiple token denoms available, enter manually");
+      //   setShowSettings(true);
+      // } else {
+      //   const asset: ChainRegistryAsset = assetData.assets[0];
+      //   denom = asset.base;
+      //   displayDenom = asset.symbol;
+      //   gasPrice = `0.03${asset.base}`;
+      //   const displayUnit = asset.denom_units.find((u) => u.denom == asset.display);
+      //   displayDenomExponent = displayUnit?.exponent ?? 6;
+      // }
+
+      // test client connection
+      console.log("herre");
+
+      const client = await StargateClient.connect(nodeAddress);
+      const chainHeight = await client.getHeight();
+      console.log("chainHeight", chainHeight);
+
+      const value = {
+        nodeAddress,
+        denom,
+        displayDenom,
+        displayDenomExponent,
+        gasPrice,
+        chainId,
+        chainDisplayName,
+        registryName,
+        addressPrefix,
+        explorerLink,
+      };
       // change app state
       dispatch({
         type: "changeChain",
-        value: {
-          nodeAddress,
-          denom,
-          displayDenom,
-          displayDenomExponent,
-          gasPrice,
-          chainId,
-          chainDisplayName,
-          registryName,
-          addressPrefix,
-          explorerLink,
-        },
+        value,
       });
       setShowSettings(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -196,7 +237,7 @@ const ChainSelect = () => {
   const onChainSelect = (option: ChainOption) => {
     const index = chainOptions.findIndex((opt) => opt.label === option.label);
     setSelectValue(chainOptions[index]);
-    getChainInfo(chainArray[option.value]);
+    getChainInfo(option.label);
   };
 
   const setChainFromForm = async () => {

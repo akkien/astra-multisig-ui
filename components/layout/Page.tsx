@@ -25,13 +25,7 @@ const Page = (props: Props) => {
         )}
         {props.children}
       </div>
-      <div className="footer-links">
-        <StackableContainer base lessPadding lessMargin>
-          <p>
-            <a href="https://github.com/samepant/cosmoshub-legacy-multisig">View on github</a>
-          </p>
-        </StackableContainer>
-      </div>
+
       <style jsx>{`
         .page {
           display: flex;
@@ -63,7 +57,7 @@ const Page = (props: Props) => {
             Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
           color: white;
           min-height: 100vh;
-          background: linear-gradient(240.16deg, #3f023c 10.46%, #561253 54.88%, #580a55 94.89%);
+          background: linear-gradient(240.16deg, #3f023c 10.46%, #561253 54.88%, #60a3f5 94.89%);
           font-size: 16px;
           margin: 0;
         }
